@@ -1,15 +1,16 @@
 <template>
   <v-main>
-    <login></login>
+    <log></log>
   </v-main>
 </template>
 
 <script>
+import log from "@/components/Login/log";
 export default {
-name: "Login"
+name: "Login",
+  components: {log}
 }
 </script>
 
 <style scoped>
-
 </style>
