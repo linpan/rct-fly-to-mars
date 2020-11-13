@@ -5,12 +5,11 @@
 </template>
 
 <script>
-import log from "@/components/Login/log";
+import log from '@/components/Login/log'
 export default {
-name: "Login",
-  components: {log}
+  name: 'Login',
+  components: { log }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

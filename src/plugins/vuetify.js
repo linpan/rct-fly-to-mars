@@ -9,6 +9,6 @@ export default new Vuetify({
     iconfont: 'fa'
   },
   theme: {
-    dark: true,
-  },
+    dark: true
+  }
 })

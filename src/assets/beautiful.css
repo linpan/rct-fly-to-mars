@@ -103,8 +103,8 @@
 #drawflow {
   position: relative;
   /*width: calc(100vw - 301px);*/
-  height: calc(100% - 50px);
-  top: 5px;
+  height: calc(100% - 0px);
+  top: 0px;
   /*background: var(--background-color);*/
   /*background-size: 25px 25px;*/
   /*background-image:*/
