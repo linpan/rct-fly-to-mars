@@ -288,6 +288,47 @@
 .drawflow .character.selected {
   background: #0051A4;
 }
+
+.drawflow-node.af {
+  display: var(--dfNodeType);
+  background: #131313;
+  color: #131313;
+  border: 2px solid #929292;
+  border-radius: 30px;
+  min-height: 51px;
+  width: auto;
+  min-width: 30px;
+  padding-top: var(--dfNodePaddingTop);
+  padding-bottom: var(--dfNodePaddingBottom);
+  -webkit-box-shadow: var(--dfNodeBoxShadowHL) var(--dfNodeBoxShadowVL) var(--dfNodeBoxShadowBR) var(--dfNodeBoxShadowS) var(--dfNodeBoxShadowColor);
+  box-shadow:  var(--dfNodeBoxShadowHL) var(--dfNodeBoxShadowVL) var(--dfNodeBoxShadowBR) var(--dfNodeBoxShadowS) var(--dfNodeBoxShadowColor);
+}
+
+/*.drawflow .af:hover {*/
+/*  background: #929292;*/
+/*}*/
+
+.drawflow .af.selected {
+  background: #131313;
+}
+.drawflow .af .input {
+  left: -18px;
+  background: #929292;
+  border: 2px  #929292;
+  border-radius: 37px;
+  height:5px;
+  width: 5px;
+}
+.drawflow .af .output {
+  right: -13px;
+  background: #929292;
+  border: 2px  solid #929292;
+  border-radius: 50px;
+  height:5px;
+  width: 5px;
+}
+
+
 /* Modal */
 .modal {
   display: none;

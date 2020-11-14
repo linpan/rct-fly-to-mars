@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row class="align-start">
       <v-col cols="3" v-for="(scene, index) of scenes" :key="index">
-        <v-card style="height: 300px">
+        <v-card style="height: 300px" to="/draw">
           <div class="d-flex justify-center align-center" style="height: 300px">
             <div>
               <div class="subtitle-1 text-center font-weight-bold">

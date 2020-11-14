@@ -8,7 +8,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item @click="0">
+          <v-list-item  to="/">
             <v-list-item-title>返回主页</v-list-item-title>
           </v-list-item>
           <v-list-item @click="1">
@@ -29,14 +29,12 @@
       <v-btn depressed large @click="spawnNode('Action')">
         <v-icon left size="26" class="mr-2">fa-bolt</v-icon> 添加动作
       </v-btn>
+      <v-btn depressed large @click="spawnNode('AF')">
+        <v-icon left size="26" class="mr-2">fa-square-root-alt</v-icon> 动作效果
+      </v-btn>
       <v-spacer></v-spacer>
-      <v-toolbar-title class="font-weight-bold"
-        >无敌抢银行编辑器</v-toolbar-title
-      >
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-btn class="primary" depressed> 更新</v-btn>
-      <v-btn class="ml-2" depressed> 保存</v-btn>
+      <v-btn class="primary" depressed> 保存</v-btn>
+      <v-btn class="ml-2 primary" depressed> 提交训练</v-btn>
     </v-app-bar>
     <v-main>
       <router-view></router-view>
