@@ -195,7 +195,7 @@ export default {
     },
     /*动态添加输入框*/
     appendUserInput() {
-      this.tabsMapping[this.types].push({ name: '我是新来的' })
+      this.tabsMapping[this.types].push({ name: '新值' })
     },
     /*动态移除输入框*/
     removeItem(index) {

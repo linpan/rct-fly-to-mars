@@ -130,19 +130,19 @@
         <v-divider></v-divider>
       </v-navigation-drawer>
     </div>
-
+<!--    物品抽屉-->
     <div
       class="pa-0 ma-0"
       v-if="drawerForObjects && currentSelected.class === 'Objects'"
     >
       <v-navigation-drawer v-model="drawerForObjects" absolute permanent right>
         <template v-slot:prepend>
-          <v-list-item class="primary">
-            <v-row align="center"  justify="center" class="primary">
+          <v-list-item style="background-color: #018062">
+            <v-row align="center"  justify="center" style="background-color: #018062">
               <v-col cols="6">
                 <v-text-field hide-details
                               class="font-weight-bold"
-                              background-color="blue"
+                              background-color="#018062"
                               label="对象编辑"
                               flat
                               solo
@@ -237,18 +237,19 @@
         <v-divider></v-divider>
       </v-navigation-drawer>
     </div>
+<!--    动作抽屉-->
     <div
       class="pa-0 ma-0"
       v-if="drawerForAction"
     >
       <v-navigation-drawer v-model="drawerForAction" absolute permanent right>
         <template v-slot:prepend>
-          <v-list-item class="primary">
-            <v-row align="center"  justify="center" class="primary">
+          <v-list-item  style="background-color: #B75B07">
+            <v-row align="center"  justify="center" >
               <v-col cols="6">
                 <v-text-field hide-details
                               class="font-weight-bold"
-                              background-color="blue"
+                              background-color="#B75B07"
                               label="动作编辑"
                               flat
                               solo
@@ -374,7 +375,7 @@
     >
       <v-navigation-drawer v-model="drawerForAF" absolute permanent right>
         <template v-slot:prepend>
-          <v-list-item class="primary">
+          <v-list-item style="background-color: #B28F33">
             <v-list-item-title
               class="font-weight-bold justify-center text-center"
             >
