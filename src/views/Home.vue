@@ -1,47 +1,47 @@
 <template>
   <v-container fluid>
     <v-row class="align-start">
-      <v-col cols="3" v-for="(scene, index) of scenes" :key="index">
-        <v-card style="height: 300px" to="/draw">
+      <v-col cols="4" class="col-md-3" v-for="(scene, index) of scenes" :key="index">
+        <v-card style="height: 300px" @click="fuck(scene.id)">
           <div class="d-flex justify-center align-center" style="height: 300px">
             <div>
-              <div class="subtitle-1 text-center font-weight-bold">
+              <div class="title text-center font-weight-bold">
                 {{ scene.name }}
               </div>
               <div class="caption grey--text text-center text-wrap">
-                修改时间{{ scene.update_time }}
+                修改时间{{ scene.updated_at }}
               </div>
             </div>
           </div>
         </v-card>
       </v-col>
       <v-col cols="3">
-        <v-card style="height: 300px">
+        <v-card>
           <div
             class="d-flex justify-center align-center dark"
             style="height: 300px"
           >
             <div>
-              <v-dialog v-model="dialog" persistent max-width="600px">
+              <v-dialog v-model="dialog" persistent max-width="550px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn dark icon v-bind="attrs" v-on="on">
                     <v-icon x-large> fa-plus-circle</v-icon>
                   </v-btn>
                 </template>
-                <v-card dark max-height="600" elevation="2">
-                  <v-card-title class="headline justify-center border--inner">
+                <v-card max-height="680" elevation="1">
+                  <v-card-title class="subtitle-1 justify-center border--inner">
                     新建场景
                   </v-card-title>
+                  <div class="mx-6 caption py-1">场景名</div>
                   <v-text-field
                     class="mx-6"
-                    label="场景名"
-                    v-model="scenceLabel"
+                    v-model="sceneLabel"
                     hide-details
                     background-color="#131313"
                     solo
                   ></v-text-field>
                   <v-divider class="mt-4" />
-                  <v-row style="height: 400px" class="py-0">
+                  <v-row style="height: 400px" class="py-1">
                     <v-col cols="5" class="pr-0">
                       <v-card class="mx-auto overflow-y-auto" tile height="380">
                         <v-list dense>
@@ -53,8 +53,8 @@
                             >
                               <v-list-item-content>
                                 <v-list-item-title>
-                                  {{ item.name }}</v-list-item-title
-                                >
+                                  {{ item.name }}
+                                </v-list-item-title>
                               </v-list-item-content>
                             </v-list-item>
                           </v-list-item-group>
@@ -65,30 +65,33 @@
                       <v-card class="mx-auto overflow-y-auto" height="380" tile>
                         <v-list
                           dark
-                          v-for="(item, index) of tabsMapping[types]"
+                          v-for="(tab, index) of tabForm[types]"
                           :key="uniqueKey(index)"
                         >
+                          <div class="mx-6 caption pb-1">
+                            {{ findTabLabel(types) }}{{ index + 1 }}
+                          </div>
                           <v-list-item>
                             <v-text-field
                               hide-details
                               class="yellow"
-                              label="属性值"
-                              :value="item.name"
+                              v-model="tab.name"
                               background-color="#131313"
                               solo
                             ></v-text-field>
                             <v-list-item-action>
                               <v-btn icon @click="removeItem(index)">
                                 <v-icon color="grey lighten-1"
-                                  >fa-minus-circle</v-icon
-                                >
+                                  >fa-minus-circle
+                                </v-icon>
                               </v-btn>
                             </v-list-item-action>
                           </v-list-item>
                         </v-list>
                         <v-list-item-action>
                           <v-btn text depressed @click="appendUserInput">
-                            <v-icon class="">fa-plus-circle</v-icon>
+                            <v-icon class="mr-2">fa-plus-circle</v-icon>
+                            新建
                           </v-btn>
                         </v-list-item-action>
                       </v-card>
@@ -127,81 +130,81 @@ export default {
     return {
       dialog: false,
       scenes: [],
-      scenceLabel: 'zia9j',
+      sceneLabel: '冰火世界 ',
       types: 'positions',
       menus: [
         {
-          key: 'positions',
+          key: 'location',
           name: '场景地点'
         },
         {
-          key: 'npc_alignments',
+          key: 'team',
           name: '任务阵营'
         },
         {
-          key: 'npc_types',
+          key: 'role',
           name: '人物类型'
         },
         {
-          key: 'npc_occupations',
+          key: 'job',
           name: '人物职业'
         },
         {
-          key: 'npc_genders',
+          key: 'gender',
           name: '人物性别'
         },
         {
-          key: 'object_types',
+          key: 'item',
           name: '物品类型'
         }
       ],
-      tabsMapping: {
-        positions: [{ name: '' }],
-        npc_alignments: [{ name: '' }],
-        npc_types: [{ name: '' }],
-        npc_occupations: [{ name: '' }],
-        npc_genders: [{ name: '' }],
-        object_types: [{ name: '' }]
+      tabForm: {
+        location: [{ name: '' }],
+        team: [{ name: '' }],
+        role: [{ name: '' }],
+        job: [{ name: '' }],
+        gender: [{ name: '' }],
+        item: [{ name: '' }]
       }
     }
   },
   methods: {
+    findTabLabel(key) {
+      const label = this.menus.find((element) => element.key === key)
+      return label.name
+    },
     uniqueKey(index) {
       return `${this.types}-${index}`
     },
     fetchScenes() {
-      this.axios
-        .get('/?project_id=1', { headers: { api_id: '2' } })
-        .then((res) => {
-          this.scenes = res.data
-        })
+      this.axios.get('/scene').then((res) => {
+        this.scenes = res.data
+        console.log(this.scenes)
+      })
     },
     CreateScenes() {
       let payload = {
-        id: 0,
-        project_id: 1,
-        name: this.scenceLabel,
-        ...this.tabsMapping
+        name: this.sceneLabel,
+        ...this.tabForm
       }
-      this.dialog = false
-      this.axios
-        .post('/', payload, { headers: { api_id: '2' } })
-        .then((res) => {
-          console.log(res.data)
-        })
+      console.log(JSON.stringify(payload))
+      this.axios.post('/scene', payload).then(() => {
+        this.dialog = false
+      })
     },
     switchTabs(key) {
       this.types = key
     },
     /*动态添加输入框*/
     appendUserInput() {
-      this.tabsMapping[this.types].push({ name: '新值' })
+      this.tabForm[this.types].push({ name: null })
     },
     /*动态移除输入框*/
     removeItem(index) {
-      if (this.tabsMapping[this.types].length > 1) {
-        this.tabsMapping[this.types].splice(index, 1)
-      }
+      this.tabForm[this.types].splice(index, 1)
+    },
+    fuck(index){
+      this.$router.push(`/draw?id=${index}`)
     }
   },
   mounted() {

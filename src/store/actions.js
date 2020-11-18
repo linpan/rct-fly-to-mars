@@ -1,13 +1,16 @@
 const actions = {
-  setNode: ({ commit }, Node) => {
+  setNode: ({commit}, Node) => {
     return commit('SET_Nodes', Node)
   },
-  setSelected: ({ commit }, node) => {
+  setSelected: ({commit}, node) => {
     return commit('SET_Selected', node)
   },
-  setCreated: ({ commit }, created) => {
+  setCreated: ({commit}, created) => {
     return commit('SET_Created', created)
-  }
+  },
+  setScene: ({commit}, scene) => {
+    return commit('SET_Scene', scene)
+  },
 }
 
 export default actions

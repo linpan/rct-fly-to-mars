@@ -8,7 +8,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item  to="/">
+          <v-list-item to="/">
             <v-list-item-title>返回主页</v-list-item-title>
           </v-list-item>
           <v-list-item @click="1">
@@ -33,7 +33,7 @@
         <v-icon left size="26" class="mr-2">fa-square-root-alt</v-icon> 动作效果
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn class="primary" depressed> 保存</v-btn>
+      <v-btn class="primary" depressed @click="saveNode"> 保存</v-btn>
       <v-btn class="ml-2 primary" depressed> 提交训练</v-btn>
     </v-app-bar>
     <v-main>
@@ -56,6 +56,9 @@ export default {
     switchLang() {},
     spawnNode(nodeType) {
       this.$bus.emit('spawnNode', { nodeType: nodeType })
+    },
+    saveNode(){
+      this.$bus.emit('saveNode')
     }
   }
 }
