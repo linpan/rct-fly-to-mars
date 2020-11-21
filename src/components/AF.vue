@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-icon color="#929292" small>fa-square-root-alt</v-icon>
+    <v-icon color="#929292"  size="24">mdi-function</v-icon>
   </div>
 </template>
 

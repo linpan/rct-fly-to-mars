@@ -11,6 +11,15 @@ const actions = {
   setScene: ({commit}, scene) => {
     return commit('SET_Scene', scene)
   },
+  auth_Success: ({ commit }, token, user) => {
+    return commit('auth_success', token, user)
+  },
+  userOut: ({ commit }) => {
+    return commit('logout')
+  },
+  setAppBar: ({ commit }, bar) => {
+    return commit('SET_appBar', bar)
+  }
 }
 
 export default actions

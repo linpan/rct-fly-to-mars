@@ -25,7 +25,7 @@
               <v-dialog v-model="dialog" persistent max-width="550px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn dark icon v-bind="attrs" v-on="on">
-                    <v-icon x-large> fa-plus-circle</v-icon>
+                    <v-icon x-large>mdi-plus-circle-outline</v-icon>
                   </v-btn>
                 </template>
                 <v-card max-height="680" elevation="1">
@@ -82,7 +82,7 @@
                             <v-list-item-action>
                               <v-btn icon @click="removeItem(index)">
                                 <v-icon color="grey lighten-1"
-                                  >fa-minus-circle
+                                  >mdi-minus
                                 </v-icon>
                               </v-btn>
                             </v-list-item-action>
@@ -90,7 +90,7 @@
                         </v-list>
                         <v-list-item-action>
                           <v-btn text depressed @click="appendUserInput">
-                            <v-icon class="mr-2">fa-plus-circle</v-icon>
+                            <v-icon class="mr-2">mdi-plus-circle-outline</v-icon>
                             新建
                           </v-btn>
                         </v-list-item-action>
@@ -122,6 +122,8 @@
 
 <script>
 // @ is an alias to /src
+
+import {mapActions} from "vuex";
 
 export default {
   name: 'Home',
@@ -169,6 +171,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setAppBar']),
     findTabLabel(key) {
       const label = this.menus.find((element) => element.key === key)
       return label.name
@@ -208,6 +211,7 @@ export default {
     }
   },
   mounted() {
+    this.setAppBar(true)
     this.fetchScenes()
     // this.CreateScenes();
   }

@@ -294,8 +294,8 @@
   background: #131313;
   color: #131313;
   border: 2px solid #929292;
-  border-radius: 30px;
-  min-height: 51px;
+  border-radius: 45px;
+  min-height: 50px;
   width: auto;
   min-width: 30px;
   padding-top: var(--dfNodePaddingTop);

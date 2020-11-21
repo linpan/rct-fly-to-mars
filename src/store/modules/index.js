@@ -3,20 +3,40 @@ const index = {
     currentSelected: null,
     scene:null,
     nodes: [],
-    created: false
+    created: false,
+    token: localStorage.getItem('access_token') || '',
+    status: '',
+    appBar: true,
   },
   mutations: {
+    SET_appBar(state, bar){
+      state.appBar = bar
+    },
+
+    auth_success(state, token) {
+      state.status = 'success'
+      state.token = token
+    },
+    logout(state) {
+      state.status = ''
+      state.token = ''
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      localStorage.removeItem('rct')
+    },
+
     SET_Scene: (state, scene)=>{
       state.scene = scene
     },
     SET_Nodes: (state, node) => {
       /*如果存在 更新*/
-      let item = state.nodes.findIndex((item) => {
+      let foundIndex = state.nodes.findIndex((item) => {
         return item.nodeId === node.nodeId
       })
-      if (item !== -1) {
-        console.log('okay...')
-        state.nodes[item]['db_id'] = node.db_id
+      //存在更新
+      if (foundIndex !== -1) {
+        console.log('更新节点名字')
+        state.nodes[foundIndex]['label'] = node.label
       } else {
         state.nodes.push(node)
       }

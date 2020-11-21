@@ -1,8 +1,11 @@
 <template>
   <div id="drawflow">
+    <v-btn @click="backupSceneNode"  class="mr-5">存储节点</v-btn>
+    <v-btn @click="restoreSceneNode" >恢复节点</v-btn>
+    <v-btn @click="connectNode" >勾连</v-btn>
     <div
       class="pa-0 ma-0"
-      v-if="drawerForCharacter && currentSelected.class === 'Character'"
+      v-if="drawerForCharacter"
     >
       <v-navigation-drawer
         v-model="drawerForCharacter"
@@ -16,9 +19,7 @@
               <v-col cols="6">
                 <v-text-field
                   hide-details
-                  class="font-weight-bold"
                   background-color="blue"
-                  value="Character"
                   flat
                   v-model="characterLabel"
                   solo
@@ -126,7 +127,7 @@
                   text
                   @click="characterParamsdialog = !characterParamsdialog"
                 >
-                  <v-icon left>fa-plus-circle</v-icon>
+                  <v-icon left>mdi-plus-circle-outline</v-icon>
                   新建参数
                 </v-btn>
               </v-list-item-action>
@@ -139,7 +140,7 @@
     <!--    物品抽屉-->
     <div
       class="pa-0 ma-0"
-      v-if="drawerForObjects && currentSelected.class === 'Objects'"
+      v-if="drawerForObjects"
     >
       <v-navigation-drawer v-model="drawerForObjects" absolute permanent right>
         <template v-slot:prepend>
@@ -210,7 +211,7 @@
             <v-list-item>
               <v-list-item-action>
                 <v-btn text @click="objectParamsdialog = !objectParamsdialog">
-                  <v-icon left>fa-plus-circle</v-icon>
+                  <v-icon left>mdi-plus-circle-outline</v-icon>
                   新建参数
                 </v-btn>
               </v-list-item-action>
@@ -231,7 +232,7 @@
               <v-divider />
               <v-list-item-action>
                 <v-btn text>
-                  <v-icon left>fa-minus</v-icon>
+                  <v-icon left>mdi-minus</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
@@ -239,7 +240,7 @@
             <v-list-item>
               <v-list-item-action>
                 <v-btn text @click="candidateAction">
-                  <v-icon left>fa-plus-circle</v-icon>
+                  <v-icon left>mdi-plus-circle-outline</v-icon>
                   添加动作
                 </v-btn>
               </v-list-item-action>
@@ -331,7 +332,7 @@
             <v-list-item>
               <v-list-item-action>
                 <v-btn text @click="actionParamsdialog = !actionParamsdialog">
-                  <v-icon left>fa-plus-circle</v-icon>
+                  <v-icon left>mdi-plus-circle-outline</v-icon>
                   新建参数
                 </v-btn>
               </v-list-item-action>
@@ -352,7 +353,7 @@
               <v-divider />
               <v-list-item-action>
                 <v-btn text>
-                  <v-icon left>fa-minus</v-icon>
+                  <v-icon left>mdi-minus</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
@@ -363,7 +364,7 @@
                   text
                   @click="candidateObject"
                 >
-                  <v-icon left>fa-plus-circle</v-icon>
+                  <v-icon left>mdi-plus-circle-outline</v-icon>
                   添加物品
                 </v-btn>
               </v-list-item-action>
@@ -473,7 +474,6 @@
                   label="动作"
                   item-text="name"
                   return-object
-                  multiple
                   filled
                   v-model="multipleActionSelect"
                 ></v-autocomplete>
@@ -486,7 +486,7 @@
           <v-btn color="blue darken-1" text @click="objectdialog = false">
             取消
           </v-btn>
-          <v-btn color="blue darken-1" text @click="appendCandiateAction">
+          <v-btn color="blue darken-1" text @click="appendCandiateActionAndDrawNode">
             保存
           </v-btn>
         </v-card-actions>
@@ -757,7 +757,7 @@
           >
             取消
           </v-btn>
-          <v-btn color="blue darken-1" text @click="appendCandiateAction">
+          <v-btn color="blue darken-1" text @click="appendCandiateActionAndDrawNode">
             保存
           </v-btn>
         </v-card-actions>
@@ -790,9 +790,9 @@ export default {
       actionDuration: 1000,
       wrappedActionParam: [],
       wrappedCharacterParam: [],
-      characterLabel: '中国',
-      objectsLabel: '大炮筒',
-      actionLabel: '丢',
+      characterLabel: '角色编辑',
+      objectsLabel: '物品编辑',
+      actionLabel: '动作编辑',
       actionParamsdialog: false,
       objectCandidatedialog: false,
       actionCandidatedialog:false,
@@ -824,7 +824,7 @@ export default {
       selectedTeam: null,
       objectTypes: [] /*物品类型*/,
       multipleActionSelect: [],
-      multipleAction: [],
+      multipleAction: [], /*物品选中的动作列表*/
       multipleGoods: [],
       actionSelect: null,
       objectSelect: null,
@@ -832,7 +832,6 @@ export default {
       selectedOccupations: null,
       selectedGenders: null,
       npcValues: [],
-      selectVal: ['Foo', 'Bar', 'Fizz', 'Buzz'],
       dynamicInput: 3,
       team: [] /*阵营*/,
       role: [] /*类型*/,
@@ -844,27 +843,66 @@ export default {
     ...mapGetters(['nodes', 'currentSelected', 'created', 'globalScene'])
   },
   mounted() {
+    this.setAppBar(false) /*切换appbar*/
     this.fetchGlobalScene()
     const id = document.getElementById('drawflow')
     this.editor = new Drawflow(id, Vue)
-    this.editor.start()
     const props = {}
-    const options = { draggable_inputs: true }
+    const options = {}
     this.editor.registerNode('Action', Action, props, options)
     this.editor.registerNode('Character', Character, props, options)
     this.editor.registerNode('Objects', Objects, props, options)
     this.editor.registerNode('AF', AF, props, options)
+    this.editor.start()
+    // this.restoreSceneNode()
     /*drawflow events*/
     // const data = {}
     // this.editor.addNode('character', 1, 1, 200, 300, 'character', data, 'Character', 'vue');
     // this.editor.addNode('objects', 1, 1, 200, 400, 'objects', data, 'Objects', 'vue');
     /* 获得后台数据*/
     this.editor.on('nodeSelected', this.asyncState)
+    // this.editor.on('import', this.renameLabel)
+
     // this.editor.addNode('af', 1, 1, 440, 300, 'af', data, 'AF', 'vue')
+
   },
   methods: {
-    ...mapActions(['setNode', 'setSelected', 'setCreated', 'setScene']),
+    ...mapActions(['setNode', 'setSelected', 'setCreated', 'setScene', 'setAppBar']),
 
+
+    connectNode(){
+      const node = this.currentSelected
+      let pos_x = node.pos_x
+      let pos_y = node.pos_y
+      const af = this.editor.addNode('af', 1, 1, pos_x+200, pos_y+50, 'af', {}, 'AF', 'vue')
+      this.editor.addConnection(node.id, af, 'output_1','input_1')
+      this.editor.addConnection(af, 2, 'output_1','input_1')
+      console.log('fuckde', af)
+
+    },
+    backupSceneNode() {
+      const parsed= this.editor.export();
+      console.log('backup', this.nodes)
+      const payload = {scene:this.$route.query.id, node:JSON.stringify(parsed), info: JSON.stringify(this.nodes)}
+      this.axios.post('node', payload).then(res=>{
+        console.log(res.data)
+        }
+      )
+    },
+    restoreSceneNode(){
+      this.axios.get(`node/${this.$route.query.id}`).then(res=>{
+        console.log(JSON.parse(res.data.node))
+         this.editor.import(JSON.parse(res.data.node))
+         const nodes = JSON.parse(res.data.info)
+         nodes.forEach(node=>{
+          document.querySelector(
+            `.drawflow .parent-node #node-${node.nodeId} span`
+          ).textContent = node.label
+        })
+        }
+      )
+
+    },
     /*进入页面加载scene*/
     fetchGlobalScene(){
       this.axios.get(`/scene/${this.$route.query.id}`).then(res=>{
@@ -875,7 +913,7 @@ export default {
     dynamicCharacterLabel(label) {
       const node = this.currentSelected
       document.querySelector(
-        `.drawflow .parent-node #node-${node.nodeId} span`
+        `.drawflow .parent-node #node-${node.id} span`
       ).innerHTML = label
     },
     wrappedObjectToItems() {
@@ -904,39 +942,26 @@ export default {
     },
     /*选中节点的处理*/
     asyncState(id) {
-      const node = this.nodes.filter((word) => word.nodeId === parseInt(id))[0]
-      /*第一步根据db_id是否存在来取得数据*/
+      const node = this.editor.getNodeFromId(id)
       this.setSelected(node)
-      const cls = node.class
+      /*第一步根据db_id是否存在来取得数据*/
+      const cls = node.html
       switch (cls) {
         case 'Character': {
           this.drawerForCharacter = true
           this.drawerForAction = false
           this.drawerForObjects = false
           this.drawerForAF = false
-          if (!node.db_id) {
-            /*创建*/
-            this.initCharacterState(node)
-            break
-          } else {
-            /* 根据id 来更新*/
-            console.log('i have node db_id')
-            this.reloadingNPC(node)
-            break
-          }
+          this.reloadingNPC(node)
+          break
         }
         case 'Objects': {
           this.drawerForObjects = true
           this.drawerForCharacter = false
           this.drawerForAction = false
           this.drawerForAF = false
-          if (!node.db_id) {
-            this.initObjectState()
-            break
-          } else {
-            this.reloadingObject(node)
-            break
-          }
+          this.reloadingObject(node)
+          break
         }
         case 'Action': {
           this.drawerForAction = true
@@ -951,14 +976,8 @@ export default {
           this.drawerForCharacter = false
           this.drawerForAction = false
           this.drawerForObjects = false
-          if (!node.db_id) {
-            this.initAFState()
+          this.reloadingAF(node)
             break
-          } else {
-            this.reloadingAF(node)
-            break
-          }
-          break
         }
         default: {
           break
@@ -966,8 +985,10 @@ export default {
       }
     },
     reloadingNPC(node) {
+      console.log("测试加载人物")
+      this.initCharacterState()
       this.axios
-        .get(`npc/${node.db_id}`)
+        .get(`npc/${this.$route.query.id}/${node.id}/`)
         .then((res) => {
           console.log('npc detail', res.data)
           this.selectedTeam = res.data.team
@@ -976,35 +997,46 @@ export default {
           this.selectedGenders = res.data.gender
           this.characterLabel = res.data.name
           this.wrappedCharacterParam = res.data.attrs
-        })
+          this.dynamicCharacterLabel(res.data.name)
+        }).catch(()=>{
+           this.initCharacterState()
+      })
     },
     reloadingObject(node) {
-      console.log(node)
       console.log('none...更新物品')
-      this.axios.get(`good/${node.db_id}`).then((res) => {
+      this.initObjectState()
+      this.axios.get(`good/${this.$route.query.id}/${node.id}`).then((res) => {
         this.wrappedObjectParam = res.data.attrs
         this.objectSelect = res.data.item_type
         this.multipleAction = res.data.actions
+        this.dynamicCharacterLabel(res.data.name)
+        this.objectsLabel = res.data.name
+      }).catch(()=>{
+        this.initObjectState()
       })
     },
+
     reloadingAction(node) {
       console.log(node)
       console.log('none...动作')
 
-      this.axios.get(`action/${node.db_id}`).then((res) => {
+      this.axios.get(`action/${this.$route.query.id}/${node.id}`).then((res) => {
         console.log(res.data, 'aciton post')
         this.wrappedActionParam = res.data.attrs
         this.actionTransitiveCheckbox = res.data.is_transitive_verb
         this.actionLabel = res.data.name
-        this.preActionDuration = res.data.attack_point
+        this.preActionDuration = res.data.transitive
         this.postActionDuraiton = res.data.attack_backswing
         this.actionDuration = res.data.attack_duration
+        this.dynamicCharacterLabel(res.data.name)
+        this.actionLabel = res.data.name
 
       })
     },
     reloadingAF(node) {
+      this.initAFState()
       this.axios
-        .get(`af/${node.db_id}`)
+        .get(`af/${this.$route.query.id}/${node.id}`)
         .then((res) => {
           console.log(res.data, 'reloading af')
           //todo 过滤afActionSource
@@ -1012,13 +1044,14 @@ export default {
           this.afActionTargetSelect = res.data.target
           this.afCondition = res.data.condition
           this.afEffects = res.data.effect
-        })
+        }).catch(()=>{
+        this.initAFState()
+      })
     },
     drawNode(nodeType) {
       let nodeLabel = nodeType.nodeType
       switch (nodeLabel) {
         case 'Character': {
-          const data = { api_id: 3 }
           let nodeId = this.editor.addNode(
             'character',
             1,
@@ -1026,17 +1059,11 @@ export default {
             100,
             100,
             'character',
-            data,
+            { api_id: 3 },
             'Character',
             'vue'
           )
-          this.setNode({
-            nodeId: nodeId,
-            api_id: 3,
-            db_id: null,
-            class: 'Character'
-          })
-          console.log(this.storgeNode)
+          console.log(this.storgeNode, nodeId)
           break
         }
 
@@ -1053,13 +1080,7 @@ export default {
             'Objects',
             'vue'
           )
-          this.setNode({
-            nodeId: nodeId,
-            api_id: 4,
-            db_id: null,
-            class: 'Objects'
-          })
-          console.log('物体')
+          console.log('物体', nodeId)
           break
         }
         case 'Action': {
@@ -1075,13 +1096,7 @@ export default {
             'Action',
             'vue'
           )
-          this.setNode({
-            nodeId: nodeId,
-            api_id: 5,
-            db_id: null,
-            class: 'Action'
-          })
-          console.log('动作')
+          console.log('动作', nodeId)
           break
         }
         case 'AF': {
@@ -1097,13 +1112,7 @@ export default {
             'AF',
             'vue'
           )
-          this.setNode({
-            nodeId: nodeId,
-            api_id: 5,
-            db_id: null,
-            class: 'AF'
-          })
-          console.log('AF')
+          console.log('AF', nodeId)
           break
         }
       }
@@ -1111,8 +1120,8 @@ export default {
     updateCharacter() {
       /*更新和保存npc对象的创建*/
       let node = this.currentSelected
-      let nodeId = node.nodeId
-      let type_node = node.class
+      let nodeId = node.id
+      let type_node = node.html
       let payload = {
         scene: this.globalScene.id,
         name: this.characterLabel,
@@ -1122,7 +1131,6 @@ export default {
         role: this.selectedTypes.id,
         job: this.selectedOccupations.id,
         gender: this.selectedGenders.id,
-        item_type: 1, /*todo remove item_type*/
         attrs: this.wrappedCharacterParam
       }
       console.log(JSON.stringify(payload), '--')
@@ -1130,10 +1138,8 @@ export default {
         .post('/npc', payload)
         .then((res) => {
           this.setNode({
-            nodeId: node.nodeId,
-            api_id: node.api_id,
-            db_id: res.data.id,
-            class: node.class
+            nodeId: node.id,
+            label: this.characterLabel,
           })
           console.log('角色', res.data)
         })
@@ -1141,7 +1147,7 @@ export default {
     updateObjects() {
       let node = this.currentSelected
 
-      let nodeId = node.nodeId
+      let nodeId = node.id
       let type_node = node.class
 
       let payload = {
@@ -1151,25 +1157,23 @@ export default {
         type_node: type_node,
         item_type: this.objectSelect.id,
         attrs: this.wrappedObjectParam,
-        actions: []
+        actions: this.multipleAction  //搭配动作
       }
-
+      console.log('>>', JSON.stringify(payload))
       this.axios
         .post('good', payload)
         .then((res) => {
           this.setNode({
-            nodeId: node.nodeId,
-            api_id: node.api_id,
-            db_id: res.data.id,
-            class: node.class
+            nodeId: node.id,
+            label: this.objectsLabel,
           })
           console.log('物品', res.data)
         })
     },
     updateAction() {
       let node = this.currentSelected
-      let nodeId = node.nodeId
-      let type_node = node.class
+      let nodeId = node.id
+      let type_node = node.html
 
       let payload = {
         scene: this.globalScene.id,
@@ -1177,10 +1181,10 @@ export default {
         name: this.actionLabel,
         type_node: type_node,
         is_transitive_verb: this.actionTransitiveCheckbox,
-        attack_point: this.preActionDuration,
+        transitive: this.preActionDuration,
         attack_backswing: this.postActionDuraiton,
         attack_duration: this.actionDuration,
-        goods: this.actionAssociatedObject,
+        good: this.actionAssociatedObject,
         attrs: this.wrappedActionParam
       }
       console.log(JSON.stringify(payload), '你丫的')
@@ -1188,18 +1192,16 @@ export default {
         .post('action', payload)
         .then((res) => {
           this.setNode({
-            nodeId: node.nodeId,
-            api_id: node.api_id,
-            db_id: res.data.id,
-            class: node.class
+            nodeId: node.id,
+            label: this.actionLabel,
           })
           console.log('动作', res.data)
         })
     },
     updateAF() {
       let node = this.currentSelected
-      let nodeId = node.nodeId
-      let type_node = node.class
+      let nodeId = node.id
+      let type_node = node.html
       let unquie = uuid.v4()
       let payload = {
         scene: this.globalScene.id,
@@ -1217,12 +1219,10 @@ export default {
       this.axios
         .post('af', payload)
         .then((res) => {
-          this.setNode({
-            nodeId: node.nodeId,
-            api_id: node.api_id,
-            db_id: res.data.id,
-            class: node.class
-          })
+          // this.setNode({
+          //   nodeId: node.nodeId,
+          //   label: 'AF',
+          // })
           console.log('af', res.data)
         })
     },
@@ -1237,37 +1237,24 @@ export default {
       this.objectTypes = this.globalScene.item
     },
     initAFState(){
-      this.axios.get('entry').then(res=>{
+      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res=>{
         this.afActionSource = res.data.source
         this.afActionTarget = res.data.target
       })
     },
     /*获得物品列表*/
-    fetchObjectScence(node) {
-      this.axios.get('entry').then(res=>{
+    fetchObjectScence() {
+      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res=>{
         const good = res.data.target.filter(ele=>ele.target_type==='good')
         this.actionAssociatedObject = good
 
       })
     },
     fetchActionScene() {
-      this.axios.get('entry').then(res=>{
+      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res=>{
         this.objectAssociatedAction = res.data.source
         console.log(res.data.source)
       })
-    },
-    fetchAfScene() {
-      /*抓取动作源和目标*/
-      this.axios
-        .get('?scene_id=1', { headers: { api_id: '5' } })
-        .then((res) => {
-          this.afActionSource = res.data
-        })
-      this.axios
-        .get('?scene_id=1', { headers: { api_id: '4' } })
-        .then((res) => {
-          this.afActionTarget = res.data
-        })
     },
     //候选动作
     candidateAction() {
@@ -1280,11 +1267,20 @@ export default {
       this.objectCandidatedialog = true
 
     },
-    appendCandiateAction() {
+    appendCandiateActionAndDrawNode() {
       const DuplicateArrary = this.multipleAction.concat(
         this.multipleActionSelect
       )
       this.multipleAction = [...new Set(DuplicateArrary)]
+      // todo draw node by program
+      console.log('show actions.....', this.multipleAction)
+      const node = this.currentSelected
+      let pos_x = node.pos_x
+      let pos_y = node.pos_y
+      const af = this.editor.addNode('af', 1, 1, pos_x+200, pos_y+50, 'af', {}, 'AF', 'vue')
+      this.editor.addConnection(node.id, af, 'output_1','input_1')
+      let next_node_id = this.multipleAction.node
+      this.editor.addConnection(af, next_node_id, next_node_id,'input_1')
     },
     appendCandiateObjects() {
       const DuplicateArrary = this.multipleGoods.concat(
@@ -1295,7 +1291,7 @@ export default {
     saveSingleNode(){
       /*人物保存*/
       let node = this.currentSelected
-      let cls = node.class
+      let cls = node.html
       if (cls==='Character'){
         this.updateCharacter()
       } else  if(cls==='Objects'){
@@ -1306,14 +1302,12 @@ export default {
       } else if (cls ==='AF'){
         this.updateAF()
       }
-
-
     }
   },
   created() {
     this.$bus.on('spawnNode', this.drawNode)
     this.$bus.on('saveNode', this.saveSingleNode)
-  }
+  },
 }
 </script>
 
