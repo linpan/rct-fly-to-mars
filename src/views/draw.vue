@@ -1,8 +1,5 @@
 <template>
   <div id="drawflow">
-    <v-btn @click="backupSceneNode"  class="mr-5">存储节点</v-btn>
-    <v-btn @click="restoreSceneNode" >恢复节点</v-btn>
-    <v-btn @click="connectNode" >勾连</v-btn>
     <div
       class="pa-0 ma-0"
       v-if="drawerForCharacter"
@@ -43,6 +40,8 @@
                   label="请选择"
                   v-model="selectedTeam"
                   item-text="name"
+                  clear-icon="mdi-close"
+                  clearable
                   solo
                   return-object
                   hide-details
@@ -59,6 +58,8 @@
                   label="请选择"
                   v-model="selectedTypes"
                   item-text="name"
+                  clear-icon="mdi-close"
+                  clearable
                   solo
                   return-object
                   hide-details
@@ -75,6 +76,8 @@
                   label="请选择"
                   v-model="selectedOccupations"
                   item-text="name"
+                  clear-icon="mdi-close"
+                  clearable
                   solo
                   return-object
                   hide-details
@@ -91,6 +94,8 @@
                   label=""
                   v-model="selectedGenders"
                   item-text="name"
+                  clear-icon="mdi-close"
+                  clearable
                   solo
                   return-object
                   hide-details
@@ -98,7 +103,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
-          <v-divider />
+          <v-divider/>
           <v-list-group>
             <template v-slot:activator>
               <v-list-item-subtitle>自定义属性</v-list-item-subtitle>
@@ -186,7 +191,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
-          <v-divider />
+          <v-divider/>
           <v-list-group>
             <template v-slot:activator>
               <v-list-item-subtitle>自定义属性</v-list-item-subtitle>
@@ -217,7 +222,7 @@
               </v-list-item-action>
             </v-list-item>
           </v-list-group>
-          <v-divider />
+          <v-divider/>
           <v-list-group>
             <template v-slot:activator>
               <v-list-item-subtitle>搭配动作</v-list-item-subtitle>
@@ -229,7 +234,7 @@
               @click="1"
             >
               <v-list-item-subtitle>{{ action.name }}</v-list-item-subtitle>
-              <v-divider />
+              <v-divider/>
               <v-list-item-action>
                 <v-btn text>
                   <v-icon left>mdi-minus</v-icon>
@@ -254,7 +259,7 @@
     <div class="pa-0 ma-0" v-if="drawerForAction">
       <v-navigation-drawer v-model="drawerForAction" absolute permanent right>
         <template v-slot:prepend>
-          <v-list-item style="background-color: #B75B07">
+          <v-list-item style="background-color: #b75b07">
             <v-row align="center" justify="center">
               <v-col cols="6">
                 <v-text-field
@@ -279,9 +284,9 @@
               <v-list-item-subtitle class="mb-1">
                 及物动作
               </v-list-item-subtitle>
-              <v-checkbox v-model="actionTransitiveCheckbox"> </v-checkbox>
+              <v-checkbox v-model="actionTransitiveCheckbox"></v-checkbox>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item class="my-2">
               <v-list-item-subtitle>
                 动作前摇
@@ -289,7 +294,7 @@
               <v-text-field solo hide-details v-model="preActionDuration">
               </v-text-field>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item class="my-2">
               <v-list-item-subtitle>
                 动作后摇
@@ -297,7 +302,7 @@
               <v-text-field solo hide-details v-model="postActionDuraiton">
               </v-text-field>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item class="my-2">
               <v-list-item-subtitle>
                 动作持续
@@ -305,9 +310,9 @@
               <v-text-field solo hide-details v-model="actionDuration">
               </v-text-field>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
           </v-list-group>
-          <v-divider />
+          <v-divider/>
           <v-list-group>
             <template v-slot:activator>
               <v-list-item-subtitle>自定义属性</v-list-item-subtitle>
@@ -338,7 +343,7 @@
               </v-list-item-action>
             </v-list-item>
           </v-list-group>
-          <v-divider />
+          <v-divider/>
           <v-list-group>
             <template v-slot:activator>
               <v-list-item-subtitle>搭配物品</v-list-item-subtitle>
@@ -350,14 +355,14 @@
               @click="1"
             >
               <v-list-item-subtitle>{{ obj.name }}</v-list-item-subtitle>
-              <v-divider />
+              <v-divider/>
               <v-list-item-action>
                 <v-btn text>
                   <v-icon left>mdi-minus</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item>
               <v-list-item-action>
                 <v-btn
@@ -391,7 +396,7 @@
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-subtitle class="mb-1">
-                  动作源
+                  动作实施者
                 </v-list-item-subtitle>
                 <v-select
                   :items="afActionSource"
@@ -399,28 +404,34 @@
                   v-model="afActionSourceSelect"
                   item-text="name"
                   solo
+                  multiple
+                  chips
+                  deletable-chips
                   return-object
                   hide-details
                 ></v-select>
               </v-list-item-content>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item link class="my-2">
               <v-list-item-content>
                 <v-list-item-subtitle class="mb-1">
-                  目标
+                  目标(角色+物件)
                 </v-list-item-subtitle>
                 <v-select
                   :items="afActionTarget"
                   v-model="afActionTargetSelect"
                   item-text="name"
                   solo
+                  multiple
+                  chips
+                  deletable-chips
                   return-object
                   hide-details
                 ></v-select>
               </v-list-item-content>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-subtitle class="mb-1">
@@ -434,7 +445,7 @@
                 ></v-textarea>
               </v-list-item-content>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-subtitle class="mb-1">
@@ -448,7 +459,7 @@
                 ></v-textarea>
               </v-list-item-content>
             </v-list-item>
-            <v-divider />
+            <v-divider/>
           </v-list-group>
         </template>
         <v-divider></v-divider>
@@ -464,7 +475,7 @@
         <v-card-title class="justify-center opacity-25">
           <span class="subtitle-1">新建参数</span>
         </v-card-title>
-        <v-divider />
+        <v-divider/>
         <v-card-text>
           <v-container>
             <v-row>
@@ -503,7 +514,7 @@
         <v-card-title class="justify-center opacity-25">
           <span class="subtitle-1">新建参数</span>
         </v-card-title>
-        <v-divider />
+        <v-divider/>
         <v-card-text>
           <v-container>
             <v-row>
@@ -565,7 +576,7 @@
         <v-card-title class="justify-center opacity-25">
           <span class="subtitle-1">新建参数</span>
         </v-card-title>
-        <v-divider />
+        <v-divider/>
         <v-card-text>
           <v-container>
             <v-row>
@@ -625,7 +636,7 @@
         <v-card-title class="justify-center opacity-25">
           <span class="subtitle-1">新建参数</span>
         </v-card-title>
-        <v-divider />
+        <v-divider/>
         <v-card-text>
           <v-container>
             <v-row>
@@ -695,9 +706,7 @@
                   label="物品"
                   item-text="name"
                   return-object
-                  multiple
                   filled
-                  dense
                   v-model="multipleObjectSelect"
                 ></v-autocomplete>
               </v-col>
@@ -719,7 +728,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-<!--   候选动作-->
+    <!--   候选动作-->
     <v-dialog
       v-model="actionCandidatedialog"
       persistent
@@ -739,7 +748,6 @@
                   label="动作"
                   item-text="name"
                   return-object
-                  multiple
                   filled
                   dense
                   v-model="multipleActionSelect"
@@ -763,22 +771,44 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar"
+      timeout="2000"
+      width="100"
+      bottom
+      color="success"
+      right
+    >
+      {{ msg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          关闭
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import Vue from 'vue'
 import Drawflow from 'drawflow'
 import Action from '@/components/Action'
 import Character from '@/components/Character'
 import Objects from '@/components/Objects'
 import AF from '@/components/AF'
-const  uuid = require("uuid");
+
+const uuid = require("uuid");
 export default {
   name: 'draw',
   data() {
     return {
+      snackbar: false,
+      msg: null,
       drawerForAF: false,
       drawerForObjects: false,
       drawerForAction: false,
@@ -795,13 +825,13 @@ export default {
       actionLabel: '动作编辑',
       actionParamsdialog: false,
       objectCandidatedialog: false,
-      actionCandidatedialog:false,
+      actionCandidatedialog: false,
       characterParamsdialog: false,
       actionParamType: 'int',
       acitonParamValue: 1,
       actionParamName: 'health',
       actionAssociatedObject: [],
-      objectAssociatedAction:[],
+      objectAssociatedAction: [],
       multipleObjectSelect: null,
       actionAssociatedObjectValue: [],
       paramType: 'int',
@@ -854,7 +884,7 @@ export default {
     this.editor.registerNode('Objects', Objects, props, options)
     this.editor.registerNode('AF', AF, props, options)
     this.editor.start()
-    // this.restoreSceneNode()
+    this.restoreSceneNode()
     /*drawflow events*/
     // const data = {}
     // this.editor.addNode('character', 1, 1, 200, 300, 'character', data, 'Character', 'vue');
@@ -870,42 +900,47 @@ export default {
     ...mapActions(['setNode', 'setSelected', 'setCreated', 'setScene', 'setAppBar']),
 
 
-    connectNode(){
+    connectNode() {
       const node = this.currentSelected
       let pos_x = node.pos_x
       let pos_y = node.pos_y
-      const af = this.editor.addNode('af', 1, 1, pos_x+200, pos_y+50, 'af', {}, 'AF', 'vue')
-      this.editor.addConnection(node.id, af, 'output_1','input_1')
-      this.editor.addConnection(af, 2, 'output_1','input_1')
+      const af = this.editor.addNode('af', 1, 1, pos_x + 200, pos_y + 50, 'af', {}, 'AF', 'vue')
+      this.editor.addConnection(node.id, af, 'output_1', 'input_1')
+      this.editor.addConnection(af, 2, 'output_1', 'input_1')
       console.log('fuckde', af)
 
     },
     backupSceneNode() {
-      const parsed= this.editor.export();
-      console.log('backup', this.nodes)
-      const payload = {scene:this.$route.query.id, node:JSON.stringify(parsed), info: JSON.stringify(this.nodes)}
-      this.axios.post('node', payload).then(res=>{
-        console.log(res.data)
+      const parsed = this.editor.export();
+      console.log('&&&&backup????', this.nodes)
+      const payload = {scene: this.$route.query.id, node: JSON.stringify(parsed), info: JSON.stringify(this.nodes)}
+      console.log('保存节点位置,', payload)
+      this.axios.post('node', payload).then(() => {
         }
       )
     },
-    restoreSceneNode(){
-      this.axios.get(`node/${this.$route.query.id}`).then(res=>{
-        console.log(JSON.parse(res.data.node))
-         this.editor.import(JSON.parse(res.data.node))
-         const nodes = JSON.parse(res.data.info)
-         nodes.forEach(node=>{
-          document.querySelector(
-            `.drawflow .parent-node #node-${node.nodeId} span`
-          ).textContent = node.label
-        })
+    restoreSceneNode() {
+      this.axios.get(`node/${this.$route.query.id}`).then(res => {
+          console.log(JSON.parse(res.data.node))
+          this.editor.import(JSON.parse(res.data.node))
+          if (res.data.info){
+            const nodes = JSON.parse(res.data.info)
+
+            nodes.forEach(node => {
+              this.setNode(node)
+              console.log(node)
+              document.querySelector(
+                `.drawflow .parent-node #node-${node.nodeId} span`
+              ).textContent = node.label
+            })
+          }
         }
       )
 
     },
     /*进入页面加载scene*/
-    fetchGlobalScene(){
-      this.axios.get(`/scene/${this.$route.query.id}`).then(res=>{
+    fetchGlobalScene() {
+      this.axios.get(`/scene/${this.$route.query.id}`).then(res => {
         this.setScene(res.data)
       })
     },
@@ -977,7 +1012,7 @@ export default {
           this.drawerForAction = false
           this.drawerForObjects = false
           this.reloadingAF(node)
-            break
+          break
         }
         default: {
           break
@@ -985,7 +1020,6 @@ export default {
       }
     },
     reloadingNPC(node) {
-      console.log("测试加载人物")
       this.initCharacterState()
       this.axios
         .get(`npc/${this.$route.query.id}/${node.id}/`)
@@ -998,8 +1032,10 @@ export default {
           this.characterLabel = res.data.name
           this.wrappedCharacterParam = res.data.attrs
           this.dynamicCharacterLabel(res.data.name)
-        }).catch(()=>{
-           this.initCharacterState()
+        }).catch((err) => {
+        console.log(err)
+        this.wrappedCharacterParam = []
+        this.initCharacterState()
       })
     },
     reloadingObject(node) {
@@ -1011,7 +1047,7 @@ export default {
         this.multipleAction = res.data.actions
         this.dynamicCharacterLabel(res.data.name)
         this.objectsLabel = res.data.name
-      }).catch(()=>{
+      }).catch(() => {
         this.initObjectState()
       })
     },
@@ -1040,11 +1076,11 @@ export default {
         .then((res) => {
           console.log(res.data, 'reloading af')
           //todo 过滤afActionSource
-          this.afActionSourceSelect = res.data.action
+          this.afActionSourceSelect = res.data.source
           this.afActionTargetSelect = res.data.target
           this.afCondition = res.data.condition
           this.afEffects = res.data.effect
-        }).catch(()=>{
+        }).catch(() => {
         this.initAFState()
       })
     },
@@ -1059,16 +1095,17 @@ export default {
             100,
             100,
             'character',
-            { api_id: 3 },
+            {api_id: 3},
             'Character',
             'vue'
           )
+
           console.log(this.storgeNode, nodeId)
           break
         }
 
         case 'Objects': {
-          const data = { api_id: 4 }
+          const data = {api_id: 4}
           let nodeId = this.editor.addNode(
             'objects',
             1,
@@ -1084,7 +1121,7 @@ export default {
           break
         }
         case 'Action': {
-          const data = { api_id: 5 }
+          const data = {api_id: 5}
           let nodeId = this.editor.addNode(
             'action',
             1,
@@ -1100,7 +1137,7 @@ export default {
           break
         }
         case 'AF': {
-          const data = { api_id: 6 }
+          const data = {api_id: 6}
           let nodeId = this.editor.addNode(
             'af',
             1,
@@ -1127,10 +1164,10 @@ export default {
         name: this.characterLabel,
         node: nodeId,
         type_node: type_node,
-        team: this.selectedTeam.id,
-        role: this.selectedTypes.id,
-        job: this.selectedOccupations.id,
-        gender: this.selectedGenders.id,
+        team: this.selectedTeam ? this.selectedTeam.id : null,
+        role: this.selectedTypes ? this.selectedTypes.id : null,
+        job: this.selectedOccupations ? this.selectedOccupations.id : null,
+        gender: this.selectedGenders ? this.selectedGenders.id : null,
         attrs: this.wrappedCharacterParam
       }
       console.log(JSON.stringify(payload), '--')
@@ -1141,8 +1178,13 @@ export default {
             nodeId: node.id,
             label: this.characterLabel,
           })
+          this.snackbar = true
+          this.msg = '更新成功'
           console.log('角色', res.data)
-        })
+        }).catch(() => {
+        this.snackbar = true
+        this.msg = '更新失败!'
+      })
     },
     updateObjects() {
       let node = this.currentSelected
@@ -1167,8 +1209,13 @@ export default {
             nodeId: node.id,
             label: this.objectsLabel,
           })
+          this.snackbar = true
+          this.msg = '物品更新!'
           console.log('物品', res.data)
-        })
+        }).catch(()=>{
+          this.snackbar = true
+          this.msg = '物品更新失败!'
+      })
     },
     updateAction() {
       let node = this.currentSelected
@@ -1195,8 +1242,13 @@ export default {
             nodeId: node.id,
             label: this.actionLabel,
           })
+          this.snackbar = true
+          this.msg = '动作更新成功!'
           console.log('动作', res.data)
-        })
+        }).catch((()=>{
+        this.snackbar = true
+        this.msg = '动作更新失败!'
+      }))
     },
     updateAF() {
       let node = this.currentSelected
@@ -1206,16 +1258,15 @@ export default {
       let payload = {
         scene: this.globalScene.id,
         node: nodeId,
-        name: 'AF' + unquie.substring(1,7),
+        name: 'AF' + unquie.substring(1, 7),
         type_node: type_node,
         condition: this.afCondition,
         effect: this.afEffects,
-        action: this.afActionSourceSelect.id,
-        target: this.afActionTargetSelect.id,
-        target_type: this.afActionTargetSelect.target_type
+        npc_source: this.afActionSourceSelect,
+        npc_target: this.afActionTargetSelect,
       }
       console.log(JSON.stringify(this.afActionTargetSelect))
-      console.log('af的post数据', JSON.stringify(payload))
+      console.log('111af的post数据', JSON.stringify(payload))
       this.axios
         .post('af', payload)
         .then((res) => {
@@ -1236,23 +1287,23 @@ export default {
     initObjectState() {
       this.objectTypes = this.globalScene.item
     },
-    initAFState(){
-      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res=>{
+    initAFState() {
+      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res => {
         this.afActionSource = res.data.source
         this.afActionTarget = res.data.target
       })
     },
     /*获得物品列表*/
     fetchObjectScence() {
-      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res=>{
-        const good = res.data.target.filter(ele=>ele.target_type==='good')
-        this.actionAssociatedObject = good
+      this.axios.get(`good?scene=${this.$route.query.id}`).then(res => {
+        this.actionAssociatedObject = res.data
 
       })
     },
+    //fetch 物品挂在动作
     fetchActionScene() {
-      this.axios.get(`entry?scene=${this.$route.query.id}`).then(res=>{
-        this.objectAssociatedAction = res.data.source
+      this.axios.get(`action?scene=${this.$route.query.id}`).then(res => {
+        this.objectAssociatedAction = res.data
         console.log(res.data.source)
       })
     },
@@ -1268,38 +1319,53 @@ export default {
 
     },
     appendCandiateActionAndDrawNode() {
-      const DuplicateArrary = this.multipleAction.concat(
-        this.multipleActionSelect
-      )
-      this.multipleAction = [...new Set(DuplicateArrary)]
-      // todo draw node by program
+      let index = this.multipleAction.findIndex(x=>x.id == this.multipleActionSelect.id)
+      if (index ===-1) {
+        this.multipleAction.push(this.multipleActionSelect)
+      }
+      //  draw node by program 动作->f -> 物品
       console.log('show actions.....', this.multipleAction)
+      let action_node_id = this.multipleActionSelect.node
+      const start_node = this.editor.getNodeFromId(action_node_id)
+      let pos_x = start_node.pos_x
+      let pos_y = start_node.pos_y
+      const af = this.editor.addNode('af', 1, 1, pos_x + 200, pos_y + 50, 'af', {}, 'AF', 'vue')
+      this.editor.addConnection(action_node_id, af, 'output_1', 'input_1')
+      console.log(this.multipleActionSelect, '节点信息')
+      let end_node = this.currentSelected
+      this.editor.addConnection(af, end_node.id, 'output_1', 'input_1')
+
+    },
+    appendCandiateObjects() {
+      let index = this.multipleGoods.findIndex(x=>x.id ===this.multipleObjectSelect.id)
+      if (index ===-1) {
+        this.multipleGoods.push(this.multipleObjectSelect)
+      }
+      // 及物动词的时候 连接
       const node = this.currentSelected
       let pos_x = node.pos_x
       let pos_y = node.pos_y
-      const af = this.editor.addNode('af', 1, 1, pos_x+200, pos_y+50, 'af', {}, 'AF', 'vue')
-      this.editor.addConnection(node.id, af, 'output_1','input_1')
-      let next_node_id = this.multipleAction.node
-      this.editor.addConnection(af, next_node_id, next_node_id,'input_1')
+      console.log(node)
+      const af = this.editor.addNode('af', 1, 1, pos_x + 200, pos_y + 50, 'af', {}, 'AF', 'vue')
+      this.editor.addConnection(node.id, af, 'output_1', 'input_1')
+      let next_node_id = this.multipleObjectSelect.node
+      this.editor.addConnection(af, next_node_id, 'output_1', 'input_1')
+
+
     },
-    appendCandiateObjects() {
-      const DuplicateArrary = this.multipleGoods.concat(
-        this.multipleObjectSelect
-      )
-      this.multipleGoods = [...new Set(DuplicateArrary)]
-    },
-    saveSingleNode(){
+    saveSingleNode() {
       /*人物保存*/
       let node = this.currentSelected
       let cls = node.html
-      if (cls==='Character'){
+      //保存节点状态
+      this.backupSceneNode()
+      if (cls === 'Character') {
         this.updateCharacter()
-      } else  if(cls==='Objects'){
-          this.updateObjects()
-      } else  if(cls ==='Action')
-      {
+      } else if (cls === 'Objects') {
+        this.updateObjects()
+      } else if (cls === 'Action') {
         this.updateAction()
-      } else if (cls ==='AF'){
+      } else if (cls === 'AF') {
         this.updateAF()
       }
     }

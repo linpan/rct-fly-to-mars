@@ -3,6 +3,7 @@
     <v-row class="align-start">
       <v-col cols="4" class="col-md-3" v-for="(scene, index) of scenes" :key="index">
         <v-card style="height: 300px" @click="fuck(scene.id)">
+          <div style="position: absolute;" class="primary  rounded-r-xl pa-1">训练中...</div>
           <div class="d-flex justify-center align-center" style="height: 300px">
             <div>
               <div class="title text-center font-weight-bold">
@@ -191,7 +192,8 @@ export default {
         ...this.tabForm
       }
       console.log(JSON.stringify(payload))
-      this.axios.post('/scene', payload).then(() => {
+      this.axios.post('/scene', payload).then((res) => {
+        this.scenes.push(res.data)
         this.dialog = false
       })
     },
