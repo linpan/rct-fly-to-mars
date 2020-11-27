@@ -11,14 +11,17 @@ const actions = {
   setScene: ({commit}, scene) => {
     return commit('SET_Scene', scene)
   },
-  auth_Success: ({ commit }, token, user) => {
+  auth_Success: ({commit}, token, user) => {
     return commit('auth_success', token, user)
   },
-  userOut: ({ commit }) => {
+  userOut: ({commit}) => {
     return commit('logout')
   },
-  setAppBar: ({ commit }, bar) => {
+  setAppBar: ({commit}, bar) => {
     return commit('SET_appBar', bar)
+  },
+  setClearNodes: ({commit}) => {
+    return commit('SET_ClearNode')
   }
 }
 

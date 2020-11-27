@@ -142,7 +142,7 @@ export default {
         },
         {
           key: 'team',
-          name: '任务阵营'
+          name: '人物阵营'
         },
         {
           key: 'role',
@@ -172,7 +172,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setAppBar']),
+    ...mapActions(['setAppBar', 'setClearNodes']),
     findTabLabel(key) {
       const label = this.menus.find((element) => element.key === key)
       return label.name
@@ -209,6 +209,7 @@ export default {
       this.tabForm[this.types].splice(index, 1)
     },
     fuck(index){
+      this.setClearNodes()
       this.$router.push(`/draw?id=${index}`)
     }
   },

@@ -1,5 +1,6 @@
 <template>
   <div id="drawflow">
+    <!--角色抽屉-->
     <div
       class="pa-0 ma-0"
       v-if="drawerForCharacter"
@@ -30,6 +31,7 @@
             <template v-slot:activator>
               <v-list-item-subtitle>基本属性</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 450px">
             <v-list-item two-line link>
               <v-list-item-content>
                 <v-list-item-subtitle class="mb-1">
@@ -102,12 +104,14 @@
                 ></v-select>
               </v-list-item-content>
             </v-list-item>
+            </div>
           </v-list-group>
           <v-divider/>
           <v-list-group>
             <template v-slot:activator>
               <v-list-item-subtitle>自定义属性</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 450px">
             <v-list-item
               v-for="(param, index) of wrappedCharacterParam"
               :key="index"
@@ -125,7 +129,7 @@
               ></v-text-field>
 
             </v-list-item>
-
+            </div>
             <v-list-item>
               <v-list-item-action>
                 <v-btn
@@ -146,6 +150,7 @@
     <div
       class="pa-0 ma-0"
       v-if="drawerForObjects"
+
     >
       <v-navigation-drawer v-model="drawerForObjects" absolute permanent right>
         <template v-slot:prepend>
@@ -181,10 +186,12 @@
                 </v-list-item-subtitle>
                 <v-select
                   :items="objectTypes"
-                  label=""
+                  label="请选择"
                   v-model="objectSelect"
                   item-text="name"
                   solo
+                  clear-icon="mdi-close"
+                  clearable
                   return-object
                   hide-details
                 ></v-select>
@@ -196,6 +203,7 @@
             <template v-slot:activator>
               <v-list-item-subtitle>自定义属性</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 350px">
             <v-list-item
               v-for="(param, index) of wrappedObjectParam"
               :key="index"
@@ -212,7 +220,7 @@
                 hide-details
               ></v-text-field>
             </v-list-item>
-
+            </div>
             <v-list-item>
               <v-list-item-action>
                 <v-btn text @click="objectParamsdialog = !objectParamsdialog">
@@ -227,6 +235,7 @@
             <template v-slot:activator>
               <v-list-item-subtitle>搭配动作</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 450px">
             <v-list-item
               v-for="(action, index) of multipleAction"
               :key="index"
@@ -241,7 +250,7 @@
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
-
+            </div>
             <v-list-item>
               <v-list-item-action>
                 <v-btn text @click="candidateAction">
@@ -317,6 +326,7 @@
             <template v-slot:activator>
               <v-list-item-subtitle>自定义属性</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 450px">
             <v-list-item
               v-for="(param, index) of wrappedActionParam"
               :key="index"
@@ -333,7 +343,7 @@
                 hide-details
               ></v-text-field>
             </v-list-item>
-
+            </div>
             <v-list-item>
               <v-list-item-action>
                 <v-btn text @click="actionParamsdialog = !actionParamsdialog">
@@ -348,6 +358,7 @@
             <template v-slot:activator>
               <v-list-item-subtitle>搭配物品</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 450px">
             <v-list-item
               v-for="(obj, index) of multipleGoods"
               :key="index"
@@ -362,6 +373,7 @@
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
+            </div>
             <v-divider/>
             <v-list-item>
               <v-list-item-action>
@@ -393,6 +405,7 @@
             <template v-slot:activator>
               <v-list-item-subtitle>动作效果</v-list-item-subtitle>
             </template>
+            <div class="overflow-y-auto" style="max-height: 450px">
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-subtitle class="mb-1">
@@ -460,6 +473,7 @@
               </v-list-item-content>
             </v-list-item>
             <v-divider/>
+            </div>
           </v-list-group>
         </template>
         <v-divider></v-divider>
@@ -899,7 +913,6 @@ export default {
   methods: {
     ...mapActions(['setNode', 'setSelected', 'setCreated', 'setScene', 'setAppBar']),
 
-
     connectNode() {
       const node = this.currentSelected
       let pos_x = node.pos_x
@@ -912,7 +925,7 @@ export default {
     },
     backupSceneNode() {
       const parsed = this.editor.export();
-      console.log('&&&&backup????', this.nodes)
+      console.log(this.nodes)
       const payload = {scene: this.$route.query.id, node: JSON.stringify(parsed), info: JSON.stringify(this.nodes)}
       console.log('保存节点位置,', payload)
       this.axios.post('node', payload).then(() => {
@@ -925,7 +938,7 @@ export default {
           this.editor.import(JSON.parse(res.data.node))
           if (res.data.info){
             const nodes = JSON.parse(res.data.info)
-
+            console.log('fsssdx', nodes)
             nodes.forEach(node => {
               this.setNode(node)
               console.log(node)
@@ -1034,7 +1047,13 @@ export default {
           this.dynamicCharacterLabel(res.data.name)
         }).catch((err) => {
         console.log(err)
+        this.characterLabel = ''
+        this.selectedTeam =  ''
+        this.selectedTypes = ''
+        this.selectedOccupations = ''
+        this.selectedGenders =  ''
         this.wrappedCharacterParam = []
+        this.dynamicCharacterLabel('Character')
         this.initCharacterState()
       })
     },
@@ -1045,9 +1064,14 @@ export default {
         this.wrappedObjectParam = res.data.attrs
         this.objectSelect = res.data.item_type
         this.multipleAction = res.data.actions
-        this.dynamicCharacterLabel(res.data.name)
         this.objectsLabel = res.data.name
+        this.dynamicCharacterLabel(res.data.name)
       }).catch(() => {
+        this.objectsLabel = ''
+        this.wrappedObjectParam = []
+        this.objectSelect = null
+        this.multipleAction = []
+        this.dynamicCharacterLabel('Object')
         this.initObjectState()
       })
     },
@@ -1064,8 +1088,17 @@ export default {
         this.preActionDuration = res.data.transitive
         this.postActionDuraiton = res.data.attack_backswing
         this.actionDuration = res.data.attack_duration
+        this.multipleGoods = res.data.good
         this.dynamicCharacterLabel(res.data.name)
-        this.actionLabel = res.data.name
+      }).catch(()=>{
+        this.actionLabel = ''
+        this.wrappedActionParam = []
+        this.actionTransitiveCheckbox = true
+        this.preActionDuration = 0
+        this.postActionDuraiton = 0
+        this.actionDuration = 0
+        this.multipleAction = []
+        this.dynamicCharacterLabel('Action')
 
       })
     },
@@ -1081,6 +1114,10 @@ export default {
           this.afCondition = res.data.condition
           this.afEffects = res.data.effect
         }).catch(() => {
+        this.afActionSourceSelect = []
+        this.afActionTargetSelect = []
+        this.afEffects = ''
+        this.afCondition = ''
         this.initAFState()
       })
     },
@@ -1170,16 +1207,17 @@ export default {
         gender: this.selectedGenders ? this.selectedGenders.id : null,
         attrs: this.wrappedCharacterParam
       }
-      console.log(JSON.stringify(payload), '--')
+      console.log(JSON.stringify(payload), '??--char')
       this.axios
         .post('/npc', payload)
         .then((res) => {
           this.setNode({
             nodeId: node.id,
-            label: this.characterLabel,
+            label: res.data.name,
           })
           this.snackbar = true
           this.msg = '更新成功'
+          this.backupSceneNode()
           console.log('角色', res.data)
         }).catch(() => {
         this.snackbar = true
@@ -1197,7 +1235,7 @@ export default {
         name: this.objectsLabel,
         node: nodeId,
         type_node: type_node,
-        item_type: this.objectSelect.id,
+        item_type: this.objectSelect ? this.objectSelect.id: null,
         attrs: this.wrappedObjectParam,
         actions: this.multipleAction  //搭配动作
       }
@@ -1209,6 +1247,7 @@ export default {
             nodeId: node.id,
             label: this.objectsLabel,
           })
+          this.backupSceneNode()
           this.snackbar = true
           this.msg = '物品更新!'
           console.log('物品', res.data)
@@ -1231,7 +1270,7 @@ export default {
         transitive: this.preActionDuration,
         attack_backswing: this.postActionDuraiton,
         attack_duration: this.actionDuration,
-        good: this.actionAssociatedObject,
+        good: this.multipleGoods,
         attrs: this.wrappedActionParam
       }
       console.log(JSON.stringify(payload), '你丫的')
@@ -1242,6 +1281,7 @@ export default {
             nodeId: node.id,
             label: this.actionLabel,
           })
+          this.backupSceneNode()
           this.snackbar = true
           this.msg = '动作更新成功!'
           console.log('动作', res.data)
@@ -1274,6 +1314,7 @@ export default {
           //   nodeId: node.nodeId,
           //   label: 'AF',
           // })
+          this.backupSceneNode()
           console.log('af', res.data)
         })
     },
@@ -1296,15 +1337,16 @@ export default {
     /*获得物品列表*/
     fetchObjectScence() {
       this.axios.get(`good?scene=${this.$route.query.id}`).then(res => {
+      //  从候选列表移除
+        console.log(res)
         this.actionAssociatedObject = res.data
-
       })
     },
     //fetch 物品挂在动作
     fetchActionScene() {
       this.axios.get(`action?scene=${this.$route.query.id}`).then(res => {
         this.objectAssociatedAction = res.data
-        console.log(res.data.source)
+        console.log(res)
       })
     },
     //候选动作
@@ -1358,7 +1400,7 @@ export default {
       let node = this.currentSelected
       let cls = node.html
       //保存节点状态
-      this.backupSceneNode()
+
       if (cls === 'Character') {
         this.updateCharacter()
       } else if (cls === 'Objects') {

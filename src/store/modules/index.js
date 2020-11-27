@@ -41,6 +41,9 @@ const index = {
         state.nodes.push(node)
       }
     },
+    SET_ClearNode:(state) =>{
+      state.nodes = []
+    },
     SET_Selected: (state, node) => {
       state.currentSelected = node
     },

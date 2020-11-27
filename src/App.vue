@@ -52,9 +52,12 @@
             <v-icon>mdi-translate</v-icon>
           </v-btn>
         </template>
-        <v-list v-for="(lang, index) of locals" :key="index" subheader>
+        <v-list subheader>
           <v-list-item dense  link>
-            <v-list-item-title @click="changeLocale">{{lang.label}}</v-list-item-title>
+            <v-list-item-title @click="changeLocale('en')">{{$t('locale.en')}}</v-list-item-title>
+          </v-list-item>
+          <v-list-item dense  link>
+            <v-list-item-title @click="changeLocale('zhHans')">{{$t('locale.zhHans')}}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -62,6 +65,8 @@
     </template>
     <template v-else>
     <v-app-bar  app dark height="48" absolute >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-btn-toggle  group color="primary">
       <v-btn large depressed @click="spawnNode('Character')">
         <v-icon left class="mr-2" size="28">mdi-account</v-icon> 角色
       </v-btn>
@@ -72,34 +77,76 @@
       <v-btn depressed large @click="spawnNode('Action')">
         <v-icon left class="mr-2" size="28">mdi-flash</v-icon> 动作
       </v-btn>
-      <v-btn depressed large @click="spawnNode('AF')">
-        <v-icon left  class="mr-2" size="28">mdi-function</v-icon> 动作效果
+      <v-btn depressed large  @click="spawnNode('AF')">
+        <v-icon left  class="mr-2" size="28">mdi-function</v-icon> 效果
       </v-btn>
+      </v-btn-toggle>
+      <v-spacer/>
+      <v-subheader class="white--text">{{ globalScene.name }}</v-subheader>
       <v-spacer/>
       <v-btn class="primary" depressed @click="saveNode"> 保存</v-btn>
       <v-btn class="ml-2 primary" depressed> 提交训练</v-btn>
-      <v-menu>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn dark depressed  v-bind="attrs" v-on="on">
-            <v-icon >mdi-dots-vertical</v-icon>
-          </v-btn>
+    </v-app-bar>
+<!--   坐抽屉-->
+      <v-navigation-drawer
+        v-model="drawer"
+        temporary
+        absolute
+        dark
+      >
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img src="https://randomuser.me/api/portraits/women/81.jpg">
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>Elon Musk</v-list-item-title>
+              <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
         </template>
-        <v-list>
-          <v-list-item to="/">
-            <v-list-item-title>返回主页</v-list-item-title>
+
+        <v-divider></v-divider>
+
+        <v-list dense>
+          <v-list-item link to="/">
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>返回主页</v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
-          <v-list-item @click="1">
-            <v-list-item-title>世界设置</v-list-item-title>
+          <v-list-item link>
+            <v-list-item-icon>
+              <v-icon>mdi-account-supervisor-circle</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>世界设置</v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
-          <v-list-item @click="2">
-            <v-list-item-title>说明文档</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout">
-            <v-list-item-title>退出登陆</v-list-item-title>
+          <v-list-item link >
+            <v-list-item-icon>
+              <v-icon>mdi-help-box</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>文档说明</v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-menu>
-    </v-app-bar>
+        <template v-slot:append>
+          <div class="pa-2">
+            <v-btn block @click="logout">
+              Logout
+            </v-btn>
+          </div>
+        </template>
+
+      </v-navigation-drawer>
     </template>
     <v-main>
       <router-view></router-view>
@@ -116,11 +163,10 @@ export default {
   components: {},
 
   data: () => ({
-    passwordt: 'Password',
-    locals: [{'label': 'Chinese'}, {'label':'English'}]
+    drawer: false,
   }),
   computed: {
-   ...mapGetters(['isAppBar', 'isLoggedIn'])
+   ...mapGetters(['isAppBar', 'isLoggedIn', 'globalScene'])
   },
   methods: {
     ...mapActions(['userOut']),
@@ -138,8 +184,12 @@ export default {
     saveNode(){
       this.$bus.emit('saveNode')
     },
-    changeLocale () {
-      this.$vuetify.lang.current = 'zhHans'
+    changeLocale (index) {
+        if (index ==='en')
+        {this.$i18n.locale = 'en'}
+        else {
+          this.$i18n.locale = 'zhHans'
+        }
     },
   }
 }
